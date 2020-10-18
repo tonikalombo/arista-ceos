@@ -1,0 +1,21 @@
+---
+      
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa) for ssh_user
+      openssh_keypair:
+        path: "/home/{{ ssh_user }}/.ssh/id_rsa"
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa) for root user
+      become: yes
+      openssh_keypair:
+        path: "/root/.ssh/id_rsa"   
+    - name: Set authorized key for ssh_user, copying it from current user
+      authorized_key:
+        user: "{{ ssh_user }}"
+        state: present
+        key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"              
+    # - name: Set authorized keys taken from github
+    #   authorized_key:
+    #     user: "{{ ssh_user }}"
+    #     state: present
+    #     key: "{{ github_public_keystore }}"            
+
+

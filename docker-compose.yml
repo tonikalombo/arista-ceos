@@ -1,0 +1,46 @@
+
+version: "3"
+
+networks:
+  net1:
+  net2:
+  
+   
+services:
+      
+    ceos-switch:     
+        image: ${REGISTRY_HOST}/ceosimage:${CEOS_VERSION}       
+        command: "/sbin/init systemd.setenv=INTFTYPE=eth && systemd.setenv=ETBA=1 && systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 && systemd.setenv=CEOS=1 && systemd.setenv=EOS_PLATFORM=ceoslab && systemd.setenv=container=docker"
+        environment: 
+          CEOS: '1' 
+          SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT: '1'
+          ETBA: '1'
+          container: docker 
+          EOS_PLATFORM: ceoslab          
+          INTFTYPE: eth           
+        env_file: .env
+        privileged: true
+        ports:
+          - 8001-8002:80         
+        networks:
+          - net1
+          - net2
+        
+         
+
+# docker create --name=ceos-switch --privileged -p 8001:80 \
+# -e INTFTYPE=eth \
+# -e ETBA=1 \
+# -e SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+# -e CEOS=1 -e EOS_PLATFORM=ceoslab \
+# -e container=docker \
+# -i -t devboksdotcom/ceosimage:4.23.2F \
+# /sbin/init \
+# systemd.setenv=INTFTYPE=eth \
+# systemd.setenv=ETBA=1 \
+# systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+# systemd.setenv=CEOS=1 \
+# systemd.setenv=EOS_PLATFORM=ceoslab \
+# systemd.setenv=container=docker 
+
+

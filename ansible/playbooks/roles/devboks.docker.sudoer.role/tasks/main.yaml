@@ -1,0 +1,13 @@
+
+- name: Ensure group "docker" exists similar to "sudo groupadd docker"
+  group:
+    name: docker
+    state: present
+- name: Add the current user to the 'docker' group, same as 'sudo usermod -aG docker $USER'
+  become: true
+  user:
+    name: '{{ ansible_user }}'
+    group: docker
+    append: yes
+- name: reset ssh connection to allow user changes to affect 'current login user' same as 'newgrp docker'
+  meta: reset_connection    

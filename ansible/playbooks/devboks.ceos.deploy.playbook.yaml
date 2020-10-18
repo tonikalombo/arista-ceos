@@ -1,0 +1,25 @@
+---
+
+- name: Spin up a network of CEOS docker instances
+  hosts: teracoceos
+  connection: ssh
+  gather_facts: true
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    docker_network_net1: "net1"
+    docker_network_net2: "net2"
+    docker_ceos1: "ceos1"
+    docker_ceos2: "ceos2"    
+    ceos_version: "4.23.2F"
+    ceos_image: "devboksdotcom/ceosimage"
+    local_image: "ceosimage"
+    ceos_archive_path: "/workspace/nanog80/cEOS-lab-{{ ceos_version }}.tar.tar"
+    docker_hub_username: "devboksdotcom"
+    docker_hub_pwd: "******"
+
+  roles:
+    - devboks.ceos.deploy.role
+
+
+

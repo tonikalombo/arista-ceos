@@ -1,0 +1,96 @@
+- name: pip Install docker
+  pip:
+    name: "docker"
+    executable: pip3
+    state: latest 
+- name: Log into DockerHub
+  docker_login:
+    username: "{{ docker_hub_username }}"
+    password: "{{ docker_hub_pwd }}"    
+
+# - name: import image from archive
+#   shell: "sudo docker import {{ ceos_archive_path }} {{ ceos_image }}:{{ ceos_version }}"
+# - name: push to DockerHub
+#   shell: "sudo docker push {{ ceos_image }}:{{ ceos_version }}" 
+
+- name: create docker instance ceos1 with needed environment variables
+  shell: "sudo docker create \
+          --name={{ docker_ceos1 }} \
+          --privileged -p 8001:80 \
+          -e INTFTYPE=eth \
+          -e ETBA=1 \
+          -e SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+          -e CEOS=1 -e EOS_PLATFORM=ceoslab \
+          -e container=docker \
+          -i -t {{ ceos_image }}:{{ ceos_version }} \
+          /sbin/init \
+          systemd.setenv=INTFTYPE=eth \
+          systemd.setenv=ETBA=1 \
+          systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+          systemd.setenv=CEOS=1 \
+          systemd.setenv=EOS_PLATFORM=ceoslab \
+          systemd.setenv=container=docker "
+
+- name: create docker instance ceos2 with needed environment variables
+  shell: "sudo docker create \
+          --name={{ docker_ceos2 }} \
+          --privileged -p 8002:80 \
+          -e INTFTYPE=eth \
+          -e ETBA=1 \
+          -e SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+          -e CEOS=1 -e EOS_PLATFORM=ceoslab \
+          -e container=docker \
+          -i -t {{ ceos_image }}:{{ ceos_version }} \
+          /sbin/init \
+          systemd.setenv=INTFTYPE=eth \
+          systemd.setenv=ETBA=1 \
+          systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 \
+          systemd.setenv=CEOS=1 \
+          systemd.setenv=EOS_PLATFORM=ceoslab \
+          systemd.setenv=container=docker "
+
+- name: Create a network docker_network_net1
+  docker_network:
+    name: "{{ docker_network_net1 }}" 
+- name: Create a network docker_network_net2
+  docker_network:
+    name: "{{ docker_network_net2 }}" 
+
+- name: Create a network docker_network_net3
+  docker_network:
+    name: "{{ docker_network_net3 }}" 
+
+- name: Create a network docker_network_net4
+  docker_network:
+    name: "{{ docker_network_net4 }}" 
+
+- name: connect docker instance ceos1 to  network net 1
+  shell: "sudo docker network connect {{ docker_network_net1 }} {{ docker_ceos1 }}"
+
+- name: connect docker instance ceos2 to  network net 1
+  shell: "sudo docker network connect {{ docker_network_net1 }} {{ docker_ceos2 }}"
+
+- name: connect docker instance ceos1 to  network net 2
+  shell: "sudo docker network connect {{ docker_network_net2 }} {{ docker_ceos1 }}"
+
+- name: connect docker instance ceos2 to  network net 2
+  shell: "sudo docker network connect {{ docker_network_net2 }} {{ docker_ceos2 }}" 
+
+
+- name: connect docker instance ceos1 to  network net 3
+  shell: "sudo docker network connect {{ docker_network_net3 }} {{ docker_ceos1 }}"
+
+- name: connect docker instance ceos2 to  network net 3
+  shell: "sudo docker network connect {{ docker_network_net3 }} {{ docker_ceos2 }}" 
+
+- name: connect docker instance ceos1 to  network net 4
+  shell: "sudo docker network connect {{ docker_network_net4 }} {{ docker_ceos1 }}"
+
+- name: connect docker instance ceos2 to  network net 4
+  shell: "sudo docker network connect {{ docker_network_net4 }} {{ docker_ceos2 }}" 
+
+- name: start docker instance ceos1
+  shell: "sudo docker start {{ docker_ceos1 }}"
+
+- name: start docker instance ceos2
+  shell: "sudo docker start {{ docker_ceos2 }}"
