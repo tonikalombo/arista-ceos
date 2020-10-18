@@ -95,6 +95,7 @@ db.sqlite3
 
 #### AWS  ####
 .aws
+.aws/
 
 
 .idea/
@@ -112,14 +113,11 @@ etc/jea/sandbox.conf
 .DS_Store/
 
 .mypy_cache
-.env
 playground/
 
-.DS_Store
-
 .git
+.git/
 
 site-packages/
 src/jea/static
 volumes
-.aws
