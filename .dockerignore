@@ -1,0 +1,17 @@
+
+.data/
+__pycache__/
+*.py[cod]
+
+.git
+
+.DS_Store/
+
+.idea/
+.env
+playground/
+
+.git
+site-packages/
+volumes
+.aws

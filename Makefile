@@ -10,7 +10,7 @@ import-image:
 
 	
 ceos-stack-up:
-	docker-compose up -d --scale ceos-switch=2
+	docker-compose up -d --scale ceos-switch=2 --scale iperf3=1
 
 ceos1Cli-up:
 	docker exec -it nanog80_ceos-switch_1 Cli
