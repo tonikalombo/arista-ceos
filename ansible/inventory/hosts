@@ -8,4 +8,4 @@ host_key_checking=False
 ansible_python_interpreter=/usr/bin/python3
 
 [vagrant]
-nanog 	ansible_ssh_host=192.168.66.24  ansible_ssh_port=22 
+nanog80 	ansible_ssh_host=192.168.33.24  ansible_ssh_port=22 

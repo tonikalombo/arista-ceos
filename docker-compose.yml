@@ -4,6 +4,8 @@ version: "3"
 networks:
   net1:
   net2:
+  net3:
+  net4:
   
    
 services:
@@ -25,20 +27,36 @@ services:
         networks:
           - net1
           - net2
+          - net3
+          - net4
 
-    iperf3:
-        image: ${REGISTRY_HOST}/iperf3   
-        command: "-s"  
+    iperf3-net1:
+        image: ${REGISTRY_HOST}/iperf3 
+        entrypoint: sh
+        command: >
+            -c "iperf3 -s - u - i 1"  
         build:
           dockerfile: Dockerfile.iperf3     
           context: iperf
         env_file: .env
         ports:
-          - 5201:5201
+          - 5001:5001
         networks:
           - net1          
        
-                 
+    iperf3-net3:
+        image: ${REGISTRY_HOST}/iperf3 
+        entrypoint: sh
+        command: >
+            -c "iperf3 -s - u - i 1"  
+        build:
+          dockerfile: Dockerfile.iperf3     
+          context: iperf
+        env_file: .env
+        ports:
+          - 5002:5001
+        networks:
+          - net3 
 
 
 
