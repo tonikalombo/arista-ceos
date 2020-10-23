@@ -10,7 +10,7 @@ networks:
    
 services:
       
-    ceos-switch:     
+    ceos-switch-net1:     
         image: ${REGISTRY_HOST}/ceosimage:${CEOS_VERSION}       
         command: "/sbin/init systemd.setenv=INTFTYPE=eth && systemd.setenv=ETBA=1 && systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 && systemd.setenv=CEOS=1 && systemd.setenv=EOS_PLATFORM=ceoslab && systemd.setenv=container=docker"
         environment: 
@@ -23,18 +23,16 @@ services:
         env_file: .env
         privileged: true
         ports:
-          - 8001-8002:80         
+          - 8001:80         
         networks:
           - net1
           - net2
-          - net3
-          - net4
 
     iperf3-net1:
         image: ${REGISTRY_HOST}/iperf3 
         entrypoint: sh
         command: >
-            -c "iperf3 -s - u - i 1"  
+            -c "iperf3 -s"  
         build:
           dockerfile: Dockerfile.iperf3     
           context: iperf
@@ -42,19 +40,37 @@ services:
         ports:
           - 5001:5001
         networks:
-          - net1          
-       
+          - net1 
+
+    ceos-switch-net3:     
+        image: ${REGISTRY_HOST}/ceosimage:${CEOS_VERSION}       
+        command: "/sbin/init systemd.setenv=INTFTYPE=eth && systemd.setenv=ETBA=1 && systemd.setenv=SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT=1 && systemd.setenv=CEOS=1 && systemd.setenv=EOS_PLATFORM=ceoslab && systemd.setenv=container=docker"
+        environment: 
+          CEOS: '1' 
+          SKIP_ZEROTOUCH_BARRIER_IN_SYSDBINIT: '1'
+          ETBA: '1'
+          container: docker 
+          EOS_PLATFORM: ceoslab          
+          INTFTYPE: eth           
+        env_file: .env
+        privileged: true
+        ports:
+          - 8003:80         
+        networks:
+          - net2
+          - net3
+               
     iperf3-net3:
         image: ${REGISTRY_HOST}/iperf3 
         entrypoint: sh
         command: >
-            -c "iperf3 -s - u - i 1"  
+            -c "iperf3 -s"  
         build:
           dockerfile: Dockerfile.iperf3     
           context: iperf
         env_file: .env
         ports:
-          - 5002:5001
+          - 5003:5001
         networks:
           - net3 
 
